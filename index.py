@@ -1,5 +1,4 @@
 from flask import Flask, Response, redirect, __version__, jsonify
-import xmltodict
 import requests
 
 app = Flask(__name__)
