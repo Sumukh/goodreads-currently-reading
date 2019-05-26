@@ -36,8 +36,8 @@ def currently_reading(goodreads_user_id):
 
 @app.route('/')
 def index():
-    return redirect('/29316435')
+    return jsonify(currently_reading(29316435))
 
 @app.route('/<userid>')
 def currently_reading_user(userid):
-    return jsonify(currently_reading(29316435))
+    return jsonify(currently_reading(userid))
