@@ -12,8 +12,10 @@ def parse_goodreads_time(time_str):
 def days_ago(time_str):
     if not time_str:
         return ''
-    if (datetime.now() - parse_goodreads_time(time_str)) < timedelta(days=1):
+    if (datetime.now() - parse_goodreads_time(time_str)) < timedelta(days=7):
         return 'this week'
+    if (datetime.now() - parse_goodreads_time(time_str)) < timedelta(days=31):
+        return 'this month'
     if (datetime.now() - parse_goodreads_time(time_str)) > timedelta(days=180):
         return 'a while ago'
     return humanize.naturaltime(datetime.now() - parse_goodreads_time(time_str))
