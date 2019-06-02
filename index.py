@@ -30,6 +30,7 @@ def currently_reading(goodreads_user_id):
         'started_at_ago': days_ago(book['started_at'][0]),
         'read_at': book['read_at'][0],
         'read_at_ago': days_ago(book['read_at'][0]),
+        'read_count': book['read_count'][0],
         'date_added': book['date_added'][0],
         'date_added_ago': days_ago(book['date_added'][0]),
         'rating': book['rating'][0],
