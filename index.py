@@ -24,6 +24,7 @@ def currently_reading(goodreads_user_id):
 
     simple_data = [{
         'title': book['book'][0]["title"][0],
+        'short_title': book['book'][0]["title"][0].split(':')[0],
         'image': book['book'][0]["image_url"][0],
         'started_at': book['started_at'][0],
         'started_at_ago': days_ago(book['started_at'][0]),
