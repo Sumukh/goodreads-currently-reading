@@ -1,3 +1,5 @@
 flask
 requests
 arrow
+xmltodict
+humanize

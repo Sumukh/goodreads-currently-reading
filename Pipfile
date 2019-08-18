@@ -10,6 +10,7 @@ flask = "*"
 requests = "*"
 arrow = "*"
 humanize = "*"
+xmltodict = "*"
 
 [requires]
 python_version = "3.6"

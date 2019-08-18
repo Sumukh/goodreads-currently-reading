@@ -1,1 +1,18 @@
-{"version":2,"name":"goodreads-reading","builds":[{"src":"**/*.py","use":"@now/python"},{"src":"css/**","use":"@now/static"}]}
+{
+    "version": 2,
+    "name": "goodreads-reading",
+    "routes": [
+        { "src": "/.*", "dest": "/"}
+    ],
+    "builds": [
+        {
+            "src": "index.py",
+            "use": "@now/python"
+        }
+    ],
+    "build": {
+        "env": {
+            "GOODREADS_API_KEY": "@goodreads-key"
+        }
+    }
+}
