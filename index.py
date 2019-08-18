@@ -8,6 +8,7 @@ app = Flask(__name__)
 def add_header(response):
     # Add a five minute cache layer
     response.cache_control.max_age = 300
+    response.cache_control.public = True
     return response
 
 @app.route('/')
