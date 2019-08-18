@@ -8,6 +8,8 @@ import xmltodict
 
 def get_shelf(user_id, shelf_name, page=1):
     api_key = os.getenv('GOODREADS_API_KEY')
+    if not api_key:
+        raise 'Missing API key in environment: GOODREADS_API_KEY'
     api_endpoint = 'https://www.goodreads.com/review/list/{}.xml?shelf={}&key={}&v=2&page={}'
     data = requests.get(api_endpoint.format(user_id, shelf_name, api_key, page))
     return json.loads(json.dumps(xmltodict.parse(data.text)))
@@ -25,13 +27,17 @@ def parse_goodreads_time(time_str):
 def days_ago(time_str, cloak_recent=True):
     if not time_str:
         return ''
-    if cloak_recent and (datetime.now() - parse_goodreads_time(time_str)) < timedelta(days=7):
-        return 'this week'
-    if cloak_recent and (datetime.now() - parse_goodreads_time(time_str)) < timedelta(days=31):
-        return 'this month'
-    if cloak_recent and (datetime.now() - parse_goodreads_time(time_str)) > timedelta(days=180):
-        return 'a while ago'
-    return humanize.naturaltime(datetime.now() - parse_goodreads_time(time_str))
+    time_difference = datetime.now() - parse_goodreads_time(time_str)
+    if cloak_recent:
+        if time_difference < timedelta(days=4):
+            return 'a few days ago'
+        if time_difference < timedelta(days=7):
+            return 'this week'
+        if time_difference < timedelta(days=31):
+            return 'this month'
+        if time_difference > timedelta(days=180):
+            return 'a while ago'
+    return humanize.naturaltime(time_difference)
 
 
 def goodreads_shelf(user_id, shelf_name, sort_by='date_added_parsed'):
