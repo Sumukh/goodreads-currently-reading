@@ -14,9 +14,14 @@ def get_shelf(user_id, shelf_name, page=1):
     data = requests.get(api_endpoint.format(user_id, shelf_name, api_key, page))
     return json.loads(json.dumps(xmltodict.parse(data.text)))
 
-def get_books(user_id, shelf_name='read'):
+def get_books(user_id, shelf_name):
     data = get_shelf(user_id, shelf_name)
     # If you want the full data you'll need to paginate
+    reviews = data['GoodreadsResponse']['reviews'].get('review')
+    if reviews is None:
+        return []
+    if type(reviews) is dict:
+        return [reviews]
     return data['GoodreadsResponse']['reviews']['review']
 
 def parse_goodreads_time(time_str):
@@ -42,7 +47,6 @@ def days_ago(time_str, cloak_recent=True):
 
 def goodreads_shelf(user_id, shelf_name, sort_by='date_added_parsed'):
     books = get_books(user_id, shelf_name)
-
     data = [{'title': book['book']["title"],
              'short_title': book['book']["title"].split(':')[0],
              'image': book['book']["image_url"],
