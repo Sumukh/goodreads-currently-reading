@@ -8,7 +8,6 @@ To [deploy](https://zeit.co/docs/v2/deployments/basics) this application, with [
 
 ```shell
 $ now secrets add goodreads-key "your-goodreads-api-key"
-$ now -e GOODREADS_API_KEY=@goodreads-key
 $ now
 ```
 

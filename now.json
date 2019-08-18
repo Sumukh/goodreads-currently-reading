@@ -10,9 +10,7 @@
             "use": "@now/python"
         }
     ],
-    "build": {
-        "env": {
-            "GOODREADS_API_KEY": "@goodreads-key"
-        }
+    "env": {
+        "GOODREADS_API_KEY": "@goodreads-key"
     }
 }
