@@ -4,6 +4,12 @@ from goodread_utils import goodreads_shelf
 
 app = Flask(__name__)
 
+@app.after_request
+def add_header(response):
+    # Add a five minute cache layer
+    response.cache_control.max_age = 300
+    return response
+
 @app.route('/')
 def index():
     return redirect('/29316435')
