@@ -14,15 +14,30 @@ def get_shelf(user_id, shelf_name, page=1):
     data = requests.get(api_endpoint.format(user_id, shelf_name, api_key, page))
     return json.loads(json.dumps(xmltodict.parse(data.text)))
 
-def get_books(user_id, shelf_name):
-    data = get_shelf(user_id, shelf_name)
-    # If you want the full data you'll need to paginate
-    reviews = data['GoodreadsResponse']['reviews'].get('review')
-    if reviews is None:
-        return []
-    if type(reviews) is dict:
-        return [reviews]
-    return data['GoodreadsResponse']['reviews']['review']
+def get_books(user_id, shelf_name, full_fetch=False):
+    books = []
+    page_index = 1
+    current_seen_books = 0
+    total_books = 1
+    # bad pagination code: todo cleanup
+    while current_seen_books < total_books:
+        data = get_shelf(user_id, shelf_name, page=page_index)
+        reviews = data['GoodreadsResponse']['reviews'].get('review')
+        current_seen_books = int(data['GoodreadsResponse']['reviews'].get('@end'))
+        total_books = int(data['GoodreadsResponse']['reviews'].get('@total'))
+
+        page_index += 1
+        if reviews is None:
+            return []
+        if type(reviews) is dict:
+            books.extend([reviews])
+        else:
+            books.extend(reviews)
+
+        if not full_fetch:
+            return books
+
+    return books
 
 def parse_goodreads_time(time_str):
     if not time_str:
@@ -45,8 +60,8 @@ def days_ago(time_str, cloak_recent=True):
     return humanize.naturaltime(time_difference)
 
 
-def goodreads_shelf(user_id, shelf_name, sort_by='date_added_parsed'):
-    books = get_books(user_id, shelf_name)
+def goodreads_shelf(user_id, shelf_name, sort_by='date_added_parsed', full_fetch=False):
+    books = get_books(user_id, shelf_name, full_fetch=full_fetch)
     data = [{'title': book['book']["title"],
              'short_title': book['book']["title"].split(':')[0],
              'image': book['book']["image_url"],
@@ -75,3 +90,5 @@ def goodreads_shelf(user_id, shelf_name, sort_by='date_added_parsed'):
              # goodreads API bug lists only one author...
              } for book in books]
     return sorted(data, key=lambda b: (b[sort_by] or b['date_added_parsed'] or datetime(1980, 1, 1)), reverse=True)
+
+
